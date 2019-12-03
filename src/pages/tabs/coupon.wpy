@@ -1,0 +1,145 @@
+<template>
+    <view>
+        <view style="display:{{nocoupon}}" class="nocoupon">
+            <van-icon name="coupon" class="nocoupon-icon"/>
+            <view class="nocoupon-title">暂无优惠券</view>
+        </view>
+        <view
+            wx:for="{{coupons}}"
+            wx:for-item="coupon"
+            wx:key="coupon.id"
+            class="couponbox"
+            id="{{coupon.id}}"
+            bindtap="getEcoupon"
+            wx:if="{{coupon.cpcount>0}}"
+        >
+            <view class="couponbox-top">
+                <view class="couponbox-left">
+                    <text class="couponbox-left-denomination">{{coupon.denomination}}</text>
+                    <text class="couponbox-left-m">元</text>
+                </view>
+                <view class="couponbox-right">
+                    <text class="couponbox-right-cname">{{coupon.cname}}</text>
+                    <view wx:if="{{coupon.sum == 0}}" class="couponbox-left-mtext">(可直接使用)</view>
+                    <view wx:elif="{{coupon.sum != 0}}" class="couponbox-left-mtext">(满{{coupon.sum}}元可用)</view>
+                </view>
+                <view class="couponbox-right-two">
+                     <view class="item_in">可领取{{coupon.cpcount}}张</view>   
+                </view>
+            </view>
+            <view class="couponbox-buttom">
+                <view
+                    class="couponbox-right-text"
+                >有效期:{{coupon.starttimeStr}} ~ {{coupon.endtimeStr}}</view>
+                <view class="couponbox-right-text">适用范围:{{coupon.instructions}}</view>
+            </view>
+        </view>
+    </view>
+</template>
+           
+<script>
+import wepy from 'wepy'
+import mix from '@/mixins/tabs/coupon.js'
+export default class Home extends wepy.page {
+  config = {
+    navigationBarTitleText: '领取优惠券'
+  }
+  mixins = [mix]
+}
+</script>
+<style lang="less">
+/* pages/main/coupon.wxss */
+page {
+  background-color: #f7f7f7;
+}
+.nocoupon {
+margin: 30rpx 0;
+  padding: 0 100rpx;
+  text-align: center;
+  .nocoupon-icon {
+    font-size:320rpx;
+    color: #BFBFBF;
+  }
+  .nocoupon-title {
+        color: #636363;
+        font-size: 28rpx;
+    }
+}
+.couponbox {
+  background-color: #fff;
+  margin: 30rpx;
+  // height: 300rpx;
+  padding: 45rpx;
+  position: relative;
+  .couponbox-top {
+    padding-bottom: 38rpx;
+    border-bottom: 2rpx dashed #d2d2d2;
+    width: 100%;
+    display: flex;
+    .couponbox-left {
+      // flex: 1;
+      width: 180rpx;
+      display: flex;
+      justify-content: space-around;
+      align-items: flex-end;
+      .couponbox-left-denomination {
+        color: #5388e7;
+        font-size: 75rpx;
+        font-weight: 600;
+      }
+      .couponbox-left-m {
+        color: #5388e7;
+        font-size: 36rpx;
+        font-size: 450;
+        margin-bottom: 10rpx;
+      }
+    }
+    .couponbox-right {
+      flex: 2;
+      margin-left: 20rpx;
+      .couponbox-right-cname {
+        font-size: 32rpx;
+        line-height: 60rpx;
+      }
+      .couponbox-left-mtext {
+        color: #7a7a7a;
+        font-size: 24rpx;
+      }
+    }
+    .couponbox-right-two {
+      .item_in {
+        font-size: 24rpx;
+        color: #4c8ff0;
+        border: 2rpx solid #4c8ff0;
+        border-radius: 10rpx;
+        padding: 10rpx;
+      }
+      .item_use,
+      .item_old {
+        position: absolute;
+        right: 10rpx;
+        top: 10rpx;
+        image {
+          width: 165rpx;
+          height: 150rpx;
+        }
+      }
+    }
+  }
+  .couponbox-buttom {
+    padding-top: 30rpx;
+    .couponbox-right-text {
+      color: #9c9c9c;
+      font-size: 24rpx;
+    }
+  }
+}
+.bgimg{
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+}
+</style>

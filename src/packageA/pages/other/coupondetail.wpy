@@ -1,0 +1,106 @@
+<template>
+    <view>
+        <view class="container page">
+            <view class="panel">
+                <view class="tiaoxinma">
+                    <view class="barnum">{{cid}}</view>
+			              <view class="barcode">
+			              	<image  src="{{BARImgUrl}}"  style="width: 100%" mode="widthFix" />
+			              </view>
+                    <canvas canvas-id="barcode" class="canvasqr" />
+                </view>
+                <view class="qrcode">
+                    <!-- <canvas canvas-id="qrcode"/> -->
+                    <image src="{{qrcode}}" class="qrcode_img" style="width: 100%" mode="widthFix" />
+                </view>
+            </view>
+        </view>
+        <view class="instructions">
+            <view>使用说明</view>
+            <text class="instructions-text">{{instructions}}</text>
+        </view>
+    </view>
+</template>
+           
+<script>
+import wepy from 'wepy'
+import mix from '@/mixins/other/coupondetail.js'
+export default class Home extends wepy.page {
+  config = {
+    navigationBarTitleText: '优惠券详情'
+  }
+  mixins = [mix]
+}
+</script>
+<style lang="less">
+/* pages/main/coupondetail.wxss */
+page {
+  background-color: rgba(100, 150, 250, 1);
+}
+.page {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.container {
+  padding-bottom: 10rpx;
+}
+
+.panel {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: stretch;
+  box-sizing: border-box;
+  width: 710rpx;
+  border-radius: 10rpx;
+  background-color: #fff;
+}
+
+  .tiaoxinma {
+	  width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20rpx;
+	  .barnum {
+		  font-size: 35rpx;
+		  text-align: center;
+      letter-spacing:15rpx;
+      margin-bottom: 20rpx;
+		}
+		.barcode {
+			width: 600rpx;
+			height: 200rpx;
+			background-color: #fff;
+		}
+  }
+  .tiaoxinma > canvas {
+	  position: absolute;
+      top: -1000px;
+      right: 0;
+      width: 100%;
+      height: 200rpx;
+    }
+.qrcode {
+  margin: 0 auto;
+  width: 400rpx;
+  height: 400rpx;
+  background-color: #fff;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.instructions {
+  padding: 10px;
+  color: white;
+}
+.instructions-text {
+  padding: 20px;
+}
+</style>

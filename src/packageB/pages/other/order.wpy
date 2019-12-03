@@ -1,0 +1,186 @@
+<template>
+    <view>
+        <!--pages/main/order.wxml-->
+        <movable-area class="movebox" style="{{moveStyle}}">
+            <movable-view
+                class="movebox-row"
+                x="{{mrx}}"
+                direction="horizontal"
+                inertia="true"
+                out-of-bounds="true"
+            >
+                <view class="movebox-row-btn {{otype0}}" id="otype0" bindtap="useBtnFun">全部</view>
+                <view class="movebox-row-btn {{otype1}}" id="otype1" bindtap="useBtnFun">待付款</view>
+                <view class="movebox-row-btn {{otype2}}" id="otype2" bindtap="useBtnFun">待收货</view>
+                <view class="movebox-row-btn {{otype3}}" id="otype3" bindtap="useBtnFun">待提货</view>
+                <view class="movebox-row-btn {{otype4}}" id="otype4" bindtap="useBtnFun">待评价</view>
+                <view class="movebox-row-btn {{otype5}}" id="otype5" bindtap="useBtnFun">已关闭</view>
+                <view class="movebox-row-btn {{otype6}}" id="otype6" bindtap="useBtnFun">已完成</view>
+                <view class="movebox-row-btn {{otype7}}" id="otype7" bindtap="useBtnFun">待发货</view>
+                <view class="movebox-row-btn {{otype8}}" id="otype8" bindtap="useBtnFun">退货中</view>
+            </movable-view>
+        </movable-area>
+        <view style="height: 50px;"></view>
+        <view style="display:{{noorder}}">
+            <image class="noorder-icon" src="/assets/images/noorder.png">
+            <view class="noorder-text">暂无订单</view>
+        </view>
+        <view style="display:{{orderbox}}">
+            <view class="order" wx:for="{{orders}}" wx:for-item="order" wx:key="*this">
+                <view class="order-head">
+                    <view>订单编号:{{order.djbh}}</view>
+                    <view>下单时间:{{order.rqtimeStr}}</view>
+                    <view class="order-head-otype" wx:if="{{order.statue == 1}}">待付款</view>
+                    <view class="order-head-otype" wx:if="{{order.statue == 2}}">待收货</view>
+                    <view class="order-head-otype" wx:if="{{order.statue == 3}}">待提货</view>
+                    <view class="order-head-otype" wx:if="{{order.statue == 4}}">待评价</view>
+                    <view class="order-head-otype" wx:if="{{order.statue == 5}}">已关闭</view>
+                    <view class="order-head-otype" wx:if="{{order.statue == 6}}">已完成</view>
+                    <view class="order-head-otype" wx:if="{{order.statue == 7}}">待发货</view>
+                    <view class="order-head-otype" wx:if="{{order.statue == 8}}">退货中</view>
+                </view>
+                <view class="order-body">
+                    <view class="order-body-left">
+                        <image
+                            class="order-body-left-icon"
+                            wx:if="{{order.spimg != null}}"
+                            src="{{order.spimg}}"
+                        >
+                        <image
+                            class="order-body-left-icon"
+                            wx:if="{{order.spimg == null}}"
+                            src="/assets/images/noimg.png"
+                        >
+                    </view>
+                    <view class="order-body-center">
+                        <view class="order-body-center-goodname">{{order.spname}}</view>
+                        <view class="order-body-center-goodsize">{{order.cname}}/{{order.cmname}}</view>
+                    </view>
+                    <view class="order-body-right">
+                        <view class="order-body-right-price">￥{{order.djmoney}}</view>
+                        <view class="order-body-right-count">x{{order.slamount}}</view>
+                    </view>
+                </view>
+                <view class="order-bottom">
+                    <text>订单总价:{{order.jsmoney}}</text>
+                </view>
+            </view>
+        </view>
+    </view>
+</template>
+           
+<script>
+import wepy from 'wepy'
+import mix from '@/mixins/other/order.js'
+export default class Home extends wepy.page {
+  config = {
+    navigationBarTitleText: '我的订单'
+  }
+  mixins = [mix]
+}
+</script>
+<style lang="less">
+/* pages/main/order.wxss */
+
+.movebox {
+  height: 50px;
+  border-bottom: 1px solid rgba(100, 100, 100, 0.1);
+  position: fixed;
+  z-index: 9;
+  background: white;
+}
+
+.movebox-row {
+  width: 900px;
+  height: 50px;
+}
+
+.movebox-row-btn {
+  width: 100px;
+  height: 48px;
+  line-height: 48px;
+  text-align: center;
+  float: left;
+}
+
+.selected {
+  color: rgba(100, 150, 250, 1);
+  border-bottom: 2px solid rgba(100, 150, 250, 1);
+}
+
+.order {
+  margin: 5px;
+  height: 200px;
+  font-size: 0.7em;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+.order-head {
+  padding: 5px;
+  height: 40px;
+  line-height: 20px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+  position: relative;
+}
+
+.order-head-otype {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  color: red;
+}
+
+.order-body {
+  height: 90px;
+  padding: 5px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+}
+
+.order-body-left {
+  width: 90px;
+  height: 90px;
+  float: left;
+}
+
+.order-body-left-icon {
+  width: 100%;
+  height: 100%;
+}
+
+.order-body-center {
+  width: 50%;
+  line-height: 30px;
+  padding-left: 5px;
+  float: left;
+}
+
+.order-body-center-goodname {
+  height: 60px;
+  overflow: hidden;
+}
+
+.order-body-center-goodsize {
+  height: 30px;
+}
+
+.order-body-right {
+  text-align: right;
+  width: 20%;
+  line-height: 45px;
+  float: right;
+}
+
+.order-bottom {
+  padding: 5px;
+  line-height: 38px;
+}
+.noorder-icon{
+  margin: 50px;
+  width: calc(100% - 100px);
+  height: 200px;
+}
+.noorder-text{
+  color: rgba(100,150,250,1);
+  text-align: center;
+}
+</style>

@@ -1,0 +1,88 @@
+{
+	"description": "A WePY project",
+	"setting": {
+		"urlCheck": false,
+		"es6": false,
+		"postcss": false,
+		"minified": false,
+		"newFeature": true,
+		"coverView": true,
+		"autoAudits": false,
+		"uglifyFileName": true,
+		"checkInvalidKey": true,
+		"checkSiteMap": true,
+		"uploadWithSourceMap": true,
+		"babelSetting": {
+			"ignore": [],
+			"disablePlugins": [],
+			"outputPath": ""
+		}
+	},
+	"compileType": "miniprogram",
+	"appid": "wx9070d9cdad1eef4c",
+	"projectname": "%E4%BC%9A%E5%91%98%E7%AE%A1%E7%90%86",
+	"miniprogramRoot": "dist/",
+	"simulatorType": "wechat",
+	"simulatorPluginLibVersion": {},
+	"libVersion": "2.8.2",
+	"condition": {
+		"search": {
+			"current": -1,
+			"list": []
+		},
+		"conversation": {
+			"current": -1,
+			"list": []
+		},
+		"plugin": {
+			"current": -1,
+			"list": []
+		},
+		"game": {
+			"list": []
+		},
+		"gamePlugin": {
+			"current": -1,
+			"list": []
+		},
+		"miniprogram": {
+			"current": 2,
+			"list": [
+				{
+					"id": -1,
+					"name": "pages/tabs/coupon",
+					"pathName": "pages/tabs/coupon",
+					"query": "",
+					"scene": null
+				},
+				{
+					"id": -1,
+					"name": "packageB/pages/other/information",
+					"pathName": "packageB/pages/other/information",
+					"query": "",
+					"scene": null
+				},
+				{
+					"id": 2,
+					"name": "pages/other/register",
+					"pathName": "pages/other/register",
+					"query": "phone=15601646387",
+					"scene": null
+				},
+				{
+					"id": -1,
+					"name": "pages/tabs/home",
+					"pathName": "pages/tabs/home",
+					"query": "",
+					"scene": null
+				},
+				{
+					"id": -1,
+					"name": "packageA/pages/other/mycoupon",
+					"pathName": "packageA/pages/other/mycoupon",
+					"scene": null
+				}
+			]
+		}
+	}
+}

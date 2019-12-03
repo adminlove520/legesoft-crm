@@ -1,0 +1,304 @@
+<template>
+	<view class="content">
+		<view class="infor">
+			<view class="inforItem">
+				<span class="title">会员名称</span>
+				<input type="text" placeholder="请输入" value="{{vipname}}" bindinput="inputName">
+				<van-icon name="arrow" class="icon"/>
+			</view>
+			<view class="inforItem">
+				<span class="title">性别</span>
+				<!-- <input
+					type="text"
+					placeholder="请选择"
+					value="{{gender}}"
+					disabled="true"
+					bindinput="inputGender"
+					@tap="showGender"
+				> -->
+				<picker
+						bindchange="inputGender"
+						class="pickerRegion"
+						value="{{gender}}"
+						range="{{genderPicker}}"
+					>
+						<view class="picker">
+							<input type="text" placeholder="请选择性别" disabled="{{outdate}}" value="{{gender}}">
+						</view>
+					</picker>
+				<van-icon name="arrow" class="icon"/>
+			</view>
+			<view class="inforItem">
+				<span class="title">手机号</span>
+				<input type="number" placeholder="请输入" value="{{phone}}" bindinput="inputPhone">
+				<van-icon name="arrow" class="icon"/>
+			</view>
+			<!-- <view class="inforItem">
+                <span class="title">身份证</span>
+                <input type="text" placeholder="请输入" value="{{identity}}" bindinput="inpuTidentity">
+                <van-icon name="arrow" class="icon"/>
+			</view>-->
+			<view class="inforItem">
+				<span class="title">生日</span>
+				<picker
+					class="pickerBirthday"
+					mode="date"
+					value="{{birDate}}"
+					start="1930-01-01"
+					end="2035-01-01"
+					bindchange="bindBirthdayChange"
+				>
+					<view>
+						<input placeholder="请选择生日" value="{{birDate}}" disabled="{{outdate}}">
+					</view>
+				</picker>
+				<van-icon name="arrow" class="icon"/>
+			</view>
+			<!-- <view class="inforItem">
+                <span class="title">地址</span>
+                
+                <van-icon name="arrow" class="icon"/>
+			</view>-->
+			<!-- 自定义字段区域 -->
+			<view class="inforItem" wx:for="{{customData}}" wx:for-index="idx" wx:key="idx">
+				<span class="title">{{item.fieldname}}</span>
+				<!-- 年月日 fieldtype: "date"-->
+				<block wx:if="{{item.fieldtype=='date'}}">
+					<picker
+						class="pickerBirthday"
+						mode="date"
+						value="{{item.val}}"
+						start="1930-01-01"
+						end="2035-01-01"
+						data-id="{{idx}}"
+						bindchange="bindChange"
+						wx:if="{{item.fieldtype=='date'}}"
+					>
+						<view>
+							<input placeholder="请选择{{item.fieldname }}" value="{{item.val}}" disabled="{{outdate}}">
+						</view>
+					</picker>
+					<van-icon name="arrow" class="icon"/>
+				</block>
+				<!-- 地址 fieldtype: "region"-->
+				<block wx:elif="{{item.fieldtype=='region'}}">
+					<picker
+						mode="region"
+						class="pickerRegion"
+						bindchange="bindChange"
+						value="{{item.val}}"
+						data-id="{{idx}}"
+						custom-item="全部"
+					>
+						<view class="picker">
+							<input
+								type="text"
+								placeholder="请选择{{item.fieldname }}"
+								disabled="{{outdate}}"
+								value="{{item.val}}"
+							>
+						</view>
+					</picker>
+					<van-icon name="arrow" class="icon"/>
+				</block>
+				<!-- 多项选择器 fieldtype: "checkbox"-->
+				<block wx:elif="{{item.fieldtype=='checkbox'}}">
+					<checkbox-group  data-id="{{idx}}" bindchange="bindcheckChange">
+						<label
+							class="checkbox"
+							wx:for="{{item.optionval}}"
+							wx:for-item="checkitem"
+							id="{{idx}}" data-id="{{inx}}"
+							@tap="bindcheckChange2"
+							wx:for-index="inx"
+							wx:key="inx"
+						>
+							<checkbox value="{{checkitem.val}}" checked="{{checkitem.checked}}"/>
+							{{checkitem.val}}
+						</label>
+					</checkbox-group>
+				</block>
+
+				<!-- 下拉列表 fieldtype: "selector"-->
+				<block wx:elif="{{item.fieldtype=='selector'}}">
+					<picker
+						bindchange="bindselectorChange"
+						data-id="{{idx}}"
+						class="pickerRegion"
+						value="{{item.val}}"
+						range="{{item.optionval}}"
+					>
+						<view class="picker">
+							<input type="text" placeholder="请选择{{item.fieldname }}" disabled="{{outdate}}" value="{{item.val}}">
+						</view>
+					</picker>
+					<van-icon name="arrow" class="icon"/>
+				</block>
+				<!-- 时间选择 fieldtype: "time"-->
+				<block wx:elif="{{item.fieldtype=='time'}}">
+					<picker
+						mode="time"
+						class="pickerRegion"
+						data-id="{{idx}}"
+						value="{{item.val}}"
+						start="09:01"
+						end="21:01"
+						bindchange="bindChange"
+					>
+						<view class="picker">
+							<input type="text" placeholder="请选择{{item.fieldname }}" disabled="{{outdate}}" value="{{item.val}}">
+						</view>
+					</picker>
+					<van-icon name="arrow" class="icon"/>
+				</block>
+				<block wx:else>
+					<input
+						type="text"
+						placeholder="请输入{{item.fieldname }}"
+						data-id="{{idx}}"
+						value="{{item.val }}"
+						bindinput="bindChange"
+					>
+					<van-icon name="arrow" class="icon"/>
+				</block>
+			</view>
+			<!-- <view class="inforItem">
+                <span class="title">验证码</span>
+                <input
+                    type="text"
+                    bindinput="inputCode"
+                    placeholder="请输入验证码"
+                    style="text-align: center"
+                    value="{{code}}"
+                >
+                <button
+                    class="code"
+                    bindtap="getCode"
+                    hover-class="btn-hover"
+                    disabled="{{flagbtn}}"
+                >
+                    {{codeText}}
+                    <van-toast id="van-toast"/>
+                </button>
+			</view>-->
+			<view class="inforBtn">
+				<button class="btn" bindtap="subMessUser">提交</button>
+			</view>
+		</view>
+		
+	</view>
+</template>
+           
+<script>
+import wepy from 'wepy'
+import mix from '../../js/information.js'
+export default class Home extends wepy.page {
+  config = {
+    navigationBarTitleText: '完善信息'
+  }
+  mixins = [mix]
+}
+</script>
+<style lang="less">
+button::after {
+  border: none;
+}
+
+button {
+  border-radius: 0;
+  background-color: #fff;
+}
+.btn-hover {
+  color: #fff;
+  background-color: #fff !important;
+}
+button[disabled] {
+  background-color: #fff !important;
+}
+.infor {
+  margin-top: 10rpx;
+  box-sizing: border-box;
+  border-top: 2rpx solid #f0f0f0;
+  width: 100%;
+  padding: 0 20rpx;
+  .inforItem {
+    display: flex;
+    box-sizing: border-box;
+    width: 100%;
+    padding: 25rpx 0;
+    border-bottom: 2rpx solid #f0f0f0;
+    .title {
+      line-height: 60rpx;
+      font-size: 28rpx;
+      color: #030303;
+    }
+    input {
+      flex: 1;
+      height: 60rpx;
+      color: #030303;
+      box-sizing: border-box;
+      display: inline-block;
+	  text-align: end;
+	  padding: 0 30rpx;
+	  line-height: 60rpx;
+      font-size: 28rpx;
+      margin-right: 20rpx;
+    }
+    .icon {
+      font-size: 50rpx;
+      font-weight: 700;
+      color: #949494;
+    }
+
+    .code {
+      width: 200rpx;
+      height: 75rpx;
+      font-size: 28rpx;
+      border-left: 2rpx solid #9a9a9a;
+      // padding: 0 40rpx 10rpx;
+      color: #7a6736;
+    }
+  }
+}
+.content {
+  position: relative;
+  .showGender {
+    width: 750rpx;
+    //   position: absolute;
+    //   left: 0;
+    //   bottom: 10px;
+  }
+  .showBirDate {
+    width: 750rpx;
+    //   position: absolute;
+    //   left: 0;
+    //   bottom: 10px;
+  }
+  .pickerBirthday,
+  .pickerRegion,
+  .pickerEducation {
+    flex: 1;
+    view {
+      padding-right: 20rpx;
+    }
+    input {
+      width: 100%;
+    }
+  }
+  .inforBtn {
+    margin-top: 46rpx;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    .btn {
+	  position: fixed;
+	  bottom: 0;
+      width: 100%;
+      height: 100rpx;
+      background-color: #5995FF;
+      color: #fff;
+      font-size: 40rpx;
+    }
+  }
+}
+</style>

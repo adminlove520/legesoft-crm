@@ -1,0 +1,380 @@
+<template>
+    <view class="home">
+        <view class="homeTop">
+            <!-- 头部背景 -->
+            <view class="top"></view>
+            <view class="bottom">
+                <view class="left"></view>
+                <view class="right"></view>
+            </view>
+            
+            <!-- 用户信息显示 -->
+            <view class="user" wx:if="{{!login}}">
+                <view class='hiddenbox' wx:if="{{showcheckuser}}">
+                    <van-button
+                    type="info" class="getBtn"
+                    open-type="getUserInfo"
+                    bindgetuserinfo="getUserInfo"
+                >授权用户信息</van-button>
+                </view>
+                <view class='hiddenbox' wx:elif="{{showcheckphone}}">
+                    <van-button type="info" class="getBtn"
+                    open-type='getPhoneNumber' 
+                    bindgetphonenumber="getPhoneNumber"
+                    >授权登录/注册</van-button> 
+                </view>
+            </view>
+            <view class="user" wx:else>
+                    <!-- 上部分 -->
+                    <view class="userTitle" >
+                        <view class="userinfo">
+                            <image
+                                class="userinfo-avatar"
+                                src="{{userInfo.avatarUrl}}"
+                                mode="cover"
+                            >
+                        </view>
+                        <view class="userMes">
+                            <van-row class="mesLeft">
+                              <van-col span="24" >
+                                  <h3 class="tel">{{vipInfo.phone}}</h3>
+                              </van-col>
+                              <van-col span="24" >
+                                  <span class="member">{{vipInfo.qpname}}</span>
+                              </van-col>
+                            </van-row>
+                            <view class="mesRight" bindtap="toMyDetailVip({{vipInfo}})">
+                                <view  class="toMydetail" >
+                                    <van-icon name="arrow" />
+                                </view>
+                            </view>
+                        </view>
+                    </view>
+                    <view class="userCentent">
+                            <view class="left">
+                                <h3 class="integral">积分: {{vipInfo.actualpoint}}</h3>
+                            </view>
+                            <view class="right" >
+                                <span class="member">余额: {{vipInfo.actualmoeny}}</span>
+                            </view>
+                    </view>
+            </view>
+        </view>
+        <!-- 订单 -->
+        <view class="order" id='otype0' bindtap='toOrder'>
+            <van-row>
+              <van-col span="12">
+                  <span class="orderTitle">全部订单</span>
+              </van-col>
+              <van-col span="12">
+                  <view class="orderAll">
+                      <span class="orderAllTitle">查看全部订单</span>
+                      <van-icon name="arrow"  />
+                  </view>
+              </van-col>
+            </van-row>
+        </view>
+        <!-- 订单分类 -->
+        <view class="orderCate" >
+            <view class="orderbox" id='otype1' bindtap='toOrder'>
+                <image src="/assets/images/payment.png" class="img">
+                <span>待付款</span>
+            </view>
+            <view class="orderbox" id='otype7' bindtap='toOrder'>
+                <image src="/assets/images/deliver.png" class="img">
+                <span>待发货</span>
+            </view>
+            <view class="orderbox" id='otype2' bindtap='toOrder'>
+                <image src="/assets/images/take.png" class="img">
+                <span>待收货</span>
+            </view>
+            <view class="orderbox" id='otype4' bindtap='toOrder'>
+                <image src="/assets/images/evaluate.png" class="img">
+                <span>待评价</span>
+            </view>
+            <view class="orderbox" id='otype6' bindtap='toOrder'>
+                <image src="/assets/images/end.png" class="img">
+                <span>已完成</span>
+            </view>
+        </view>
+        <!-- 功能区 -->
+        <view class="dsyfution">
+            <view class="memberDetail" bindtap='toMyDetail'>
+                <image src="/assets/images/member.png" class="img">
+                <span>会员信息</span>
+                <van-icon name="arrow" class="icon" />
+            </view>
+            <view class="couponDetail" bindtap='toMyCoupon'>
+                 <image src="/assets/images/coupon.png" class="img">
+                <span>优惠券</span>
+                <van-icon name="arrow" class="icon" />
+            </view>
+            <view class="couponDetail" bindtap='toInformation'>
+                 <image src="/assets/images/member.png" class="img">
+                <span>完善信息</span>
+                <van-icon name="arrow" class="icon" />
+            </view>
+            <!-- <view class="couponDetail" bindtap='test'>
+                 <image src="/assets/images/member.png" class="img">
+                <span>完善信息</span>
+                <van-icon name="arrow" class="icon" />
+            </view> -->
+        </view>
+        <!-- <van-popup show="{{ showgift }}"  bind:close="Closegift" bindtap='gift'>领取大礼包</van-popup> -->
+        <!-- <van-popup show="{{ showgift }}"  bind:close="ClosegiftDetail" >
+            <view>礼券1</view>
+            <view>礼券1</view>
+            <view>礼券1</view>
+        </van-popup> -->
+    </view>
+</template>
+           
+<script>
+import wepy from 'wepy'
+import mix from '@/mixins/tabs/home.js'
+export default class Home extends wepy.page {
+  config = {
+      enablePullDownRefresh:true,
+      backgroundTextStyle:'dark'
+  }
+  mixins = [mix]
+}
+</script>
+<style lang="less">
+// .van-popup {
+//     padding: 100rpx;
+//     background-color: #5895ff!important;
+//     background-image: url(/assets/images/member.png);
+//     color: pink;
+// }
+page{
+width:100%;
+box-sizing: border-box;
+overflow-x:hidden;
+}
+// 顶部
+.blue {
+    background-color: #5A96FE;
+    color: #fff;
+}
+.homeTop {
+// box-sizing: border-box;
+  position: relative;
+  width: 100%;
+  // height: 300rpx;
+  .top {
+    width: 100%;
+    height: 219rpx;
+    background-color: #5895ff;
+    // border-bottom: 1px solid #ccc;
+  }
+  .bottom {
+    width: 100%;
+    display: flex;
+    .left {
+      flex: 1;
+      height: 80rpx;
+      background: #5895ff;
+      border-radius: 0 0 50% / 100% 100%;
+    }
+    .right {
+      flex: 1;
+      height: 80rpx;
+      background: #5895ff;
+      border-radius: 0 0 100% 50% / 100%;
+    }
+    // width: 50%;
+  }
+  // 顶部用户信息
+  .user {
+      position: absolute;
+      top: 268rpx;
+      left: 50%;
+      transform: translate(-50%,-50%);
+      box-sizing: border-box;
+      width: 90%;
+      height: 335rpx;
+      border-radius: 36rpx;
+      background-color: #fff;
+      box-shadow:0 0 50rpx #a0b5e1;
+      .hiddenbox {
+          width: 100%;
+        //   position: relative;
+          .getBtn {
+              position: absolute;
+              top: 50%;
+              left: 50%;
+              transform: translate(-50%,-50%);
+          }
+      }
+    //   头像信息
+      .userTitle {
+        display: flex;
+        align-items: center;
+        padding: 0 30rpx;
+        .userinfo {
+            flex: 1;
+        }
+        .userMes {
+            flex: 3;
+            display: flex;
+            .mesLeft {
+                flex: 1;
+                .tel {
+                    height: 40rpx;
+                    line-height: 40rpx;
+                    font-size: 28rpx;
+                    color: #424242;
+                }
+                .member {
+                    display: inline-block;
+                    margin: 10rpx 0 ;
+                    height: 36rpx;
+                    line-height: 36rpx;
+                    padding: 0 20rpx;
+                    font-size: 22rpx;
+                    background-color: #5895FE;
+                    // border: 2rpx solid #DFDFDF;
+                    border-radius: 48rpx;
+                    color: #fff;
+                }
+            }
+            .mesRight {
+                flex: 1;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                .toMydetail {
+                    font-size: 40rpx;
+                    color: #D1D1D1;
+                }
+            }
+        }
+    }
+  }
+//   积分和余额
+  .userCentent {
+      display: flex;
+      width: 75%;
+      margin: 0 auto;
+      margin-top: 56rpx;
+      padding: 7rpx 0;
+      border-top: 3rpx solid #E4E4E4;
+      .left,.right {
+          flex: 1;
+        //   height: 60rpx;
+          font-size: 26rpx;
+          line-height: 75rpx;
+          text-align: center;
+          color: #2E2E2E;
+          font-weight: 500;
+      }
+      .left {
+          border-right: 3rpx solid  #E4E4E4;
+      }
+  }
+}
+// 订单
+.order {
+    margin-top: 210rpx;
+    padding: 0 30rpx;
+    padding-bottom: 10rpx;
+    height: 70rpx;
+    line-height: 70rpx;
+    border-bottom: 2rpx solid #ECECEC;
+    .van-row {
+        
+        margin-left: 25rpx;
+        .orderTitle {
+            font-size: 28rpx;
+            text-align: start;
+        }
+        .orderAll {
+            color: #BBBBBB;
+            text-align: end;
+            .orderAllTitle {
+                font-size: 28rpx;
+                line-height: 70rpx;
+            }
+            .van-icon {
+                font-size: 24rpx;
+                // margin-top: 10rpx;
+                // line-height: 70rpx;
+            }
+        }
+    }
+}
+// 订单分类
+.orderCate {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 28rpx 34rpx;
+    display: flex;
+    .orderbox {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        .img {
+            margin-bottom: 24rpx;
+            flex: 1;
+            width: 65rpx;
+            height: 65rpx;
+        }
+        span {
+            font-size: 24rpx;
+        }
+    }
+}
+// 功能区
+.dsyfution {
+    width: 100%;
+    height: 550rpx;
+    border-top: 15rpx solid #F2F2F2;
+    .memberDetail,.couponDetail {
+        box-sizing: border-box;
+        width: 100%;
+        padding: 28rpx 34rpx;
+        border-bottom: 2rpx solid #F0F0F0;
+        .img {
+            display: inline-block;
+            vertical-align: middle;
+            width: 40rpx;
+            height: 38rpx;
+            padding: 0 20rpx;
+        }
+        span {
+            display: inline-block;
+            width: 560rpx;
+            text-align: start;
+            color: #3f3f3f;
+            font-size: 24rpx;
+        }
+        .icon {
+            font-size: 30rpx;
+            font-weight: 700;
+            color: #cfcfcf;
+        }
+    }
+}
+
+
+
+// 用户头像
+.userinfo-avatar {
+  width: 100rpx;
+  height: 100rpx;
+  margin: 20rpx;
+  border-radius: 50%;
+}
+
+.userinfo-nickname {
+  color: #aaa;
+}
+
+.usermotto {
+  margin-top: 200px;
+}
+</style>

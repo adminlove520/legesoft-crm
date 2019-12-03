@@ -1,0 +1,287 @@
+<style lang="less">
+.container {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  box-sizing: border-box;
+}
+</style>
+<script>
+import wepy from 'wepy'
+import '@/baseApi.js'
+// import '@/mixins/tabs/home.js'
+// 开启async功能
+import 'wepy-async-function'
+import base64 from '@/mixins/tool/base64.js'
+// import { setStore } from 'wepy-redux'
+// import configStore from './store'
+
+// const store = configStore()
+// setStore(store)
+
+export default class extends wepy.app {
+  config = {
+    pages: [
+      'pages/tabs/home',
+      'pages/tabs/coupon',
+      'pages/other/mydetail',
+      'pages/other/mydetailVip'
+    ],
+    subPackages: [
+      {
+        root: 'packageA',
+        pages: ['pages/other/mycoupon', 'pages/other/coupondetail']
+      },
+      {
+        root: 'packageB',
+        pages: ['pages/other/order', 'pages/other/information']
+      }
+    ],
+    tabBar: {
+      // 选中的文本颜色
+      selectedColor: '#5c90f9',
+      color: '#ccc',
+      // tabBar 的列表
+      list: [
+        {
+          // 页面路径
+          pagePath: 'pages/tabs/home',
+          // 显示的文本
+          text: '个人中心',
+          // 默认图标
+          iconPath: '/assets/images/home.png',
+          // 选中图标
+          selectedIconPath: '/assets/images/home_.png'
+        },
+        {
+          pagePath: 'pages/tabs/coupon',
+          text: '优惠领取',
+          iconPath: '/assets/images/couponlingqu.png',
+          selectedIconPath: '/assets/images/couponlingqu_.png'
+        }
+      ]
+    },
+    window: {
+      backgroundTextStyle: 'light',
+      navigationBarBackgroundColor: '#5895FF',
+      navigationBarTitleText: '个人中心',
+      navigationBarTextStyle: 'white'
+    },
+    // 引用并注册全局组件
+    usingComponents: {
+      // 徽章组件
+      'van-badge': './assets/vant/badge/index',
+      'van-badge-group': './assets/vant/badge-group/index',
+      'van-row': './assets/vant/row/index',
+      'van-col': './assets/vant/col/index',
+      'van-search': './assets/vant/search/index',
+      'van-tag': './assets/vant/tag/index',
+      'van-cell': './assets/vant/cell/index',
+      'van-cell-group': './assets/vant/cell-group/index',
+      'van-card': './assets/vant/card/index',
+      'van-panel': './assets/vant/panel/index',
+      'van-icon': './assets/vant/icon/index',
+      // tab 标签页
+      'van-tab': './assets/vant/tab/index',
+      'van-tabs': './assets/vant/tabs/index',
+      //   input
+      'van-field': './assets/vant/field/index',
+      // 按钮
+      'van-button': './assets/vant/button/index',
+      'van-picker': './assets/vant/picker/index',
+      'van-popup': './assets/vant/popup/index',
+      'van-datetime-picker': './assets/vant/datetime-picker/index',
+      'van-toast': './assets/vant/toast/index'
+      //   'van-popup': './assets/vant/popup/index'
+    }
+  }
+
+  globalData = {
+    userInfo: null,
+    vipInfo: null,
+    code: null,
+    eid: 'LS000000',
+    // eid: 'e20160913452612100',
+    // eid: 'E20190924391312101', //集志服饰
+    openid: '',
+    unionid: '',
+    sessionKey: '',
+    phone: '',
+    uncouponnum: 0
+  }
+
+  constructor() {
+    super()
+    this.use('requestfix')
+    // 通过下面这一行代码，可以为异步的API，
+    // 开启Promise功能，这样，异步API调用的结果，返回值是Promise对象
+    this.use('promisify')
+    // 拦截器
+    this.intercept('request', {
+      // 发出请求时的回调函数
+      config(p) {
+        // 显示loading效果
+        wepy.showLoading({
+          title: '数据加载中...'
+        })
+        // 必须返回OBJECT参数对象，否则无法发送请求到服务端
+        return p
+      },
+
+      // 请求成功后的回调函数
+      success(p) {
+        // 必须返回响应数据对象，否则后续无法对响应数据进行处理
+        return p
+      },
+
+      // 请求失败后的回调函数
+      fail(p) {
+        // 必须返回响应数据对象，否则后续无法对响应数据进行处理
+        return p
+      },
+
+      // 请求完成时的回调函数(请求成功或失败都会被执行)
+      complete(p) {
+        // 隐藏loading效果
+        wepy.hideLoading()
+      }
+    })
+  }
+
+  onLaunch() {}
+  onLoad() {}
+  // 查询登录状态是否过期
+  async checkLogin() {
+    let datames = wx.getStorageSync('datames')
+    // 登录状态
+    // 用户信息授权状态
+    if (datames) {
+      // 检查session_key是否过期
+      const checksessionres = await wepy.checkSession().catch(err => err)
+      console.log(checksessionres, '检查session_key是否过期')
+      if (checksessionres.errMsg !== 'checkSession:ok') {
+        return { loginstatu: 0, mes: 'sessionkey过期' }
+      }
+      return { loginstatu: true, mes: 'sessionkey正常' }
+    } else {
+      // 首次登录
+      console.log('首次登录')
+
+      return { loginstatu: 1, mes: '首次登录' }
+    }
+  }
+
+  // 查询权限状态
+  async getSettingStatus(scopeName) {
+    const Settingres = await wepy.getSetting({}).catch(err => err)
+    // console.log(Settingres, 'app')
+    if (Settingres.errMsg !== 'getSetting:ok') {
+      return { mes: '查询授权状态失败', statu: 0 }
+    }
+    if (Settingres.authSetting[scopeName] === undefined) {
+      return { mes: '没有授权' + scopeName, statu: 1 }
+    }
+    if (Settingres.authSetting[scopeName] === false) {
+      return { mes: '拒绝过授权' + scopeName, statu: 2 }
+    }
+    if (Settingres.authSetting[scopeName] === true) {
+      return { mes: '已授权' + scopeName, statu: true }
+    }
+  }
+  // 手动打开授权设置
+  async openSetting(scopeName) {
+    const res = await wepy.openSetting().catch(err => err)
+    console.log(res)
+    if (res.errMsg !== 'openSetting:ok') {
+      return { mes: '跳转设置接口失败', statu: false }
+    }
+    if (res.authSetting[scopeName] === false) {
+      return { mes: '没有设置授权' + scopeName, statu: false }
+    }
+    if (res.authSetting[scopeName] === true) {
+      return { mes: '设置了授权' + scopeName, statu: true }
+    }
+  }
+
+  // 获取已领取的优惠券数量
+  // async getcounon(types) {
+  //   // 发请求
+  //   let params = {
+  //     eid: this.globalData.vipInfo.eid,
+  //     vipid: this.globalData.vipInfo.vid,
+  //     ctype: types
+  //   }
+  //   console.log(params, 99)
+  //   const { data: res } = await wepy.post('/coupon/getmycoupon', params)
+  //   console.log(res, '未使用的优惠券全局')
+  //   if (!res.statu) {
+  //     return { statu: false, mes: res.mes ? res.mes : '获取优惠券失败' }
+  //   }
+
+  //   if (res.rows) {
+  //     this.globalData.uncouponnum = res.rows.length
+  //   }
+  //   return { statu: true, mes: '获取优惠券成功' }
+  //   // 获取到结果回调函数
+  // }
+  // 判断授权状态,有就直接赋值，没有就手动点击授权并获取赋值
+
+  async getparam(params, userInfo) {
+    let loginRes = await wepy.login().catch(err => err)
+    console.log(loginRes)
+
+    // 加密手机号 encryptData
+    console.log([params.encryptedData, params.iv], '传输前')
+
+    let encryptedData = base64.base64_encode(params.encryptedData)
+    let iv = base64.base64_encode(params.iv)
+    console.log([encryptedData, iv], '传输后')
+
+    // this.globalData.code=params.code
+
+    let parent = {
+      code: this.globalData.code,
+      // code: loginRes.code,
+      eid: this.globalData.eid,
+      encryptData: encryptedData,
+      iv: iv,
+      usNickname: userInfo.nickName,
+      usSex: userInfo.gender,
+      usLanguage: userInfo.language,
+      usCity: userInfo.city,
+      usProvince: userInfo.province,
+      usCountry: userInfo.country,
+      usHeadimgurl: userInfo.avatarUrl,
+      usSubscribeTime: Date.parse(new Date()) / 1000
+    }
+    // console.log(parent, '传递的加密信息')
+
+    const { data: res } = await wepy.post('/register/wxsaRegister', parent)
+    // console.log(res, 888)
+    return res
+  }
+
+  async getVipInfo2(datames, userInfo) {
+    let parent = {
+      eid: this.globalData.eid,
+      usOpenid: datames.openid,
+      usUnionid: datames.unionid ? datames.unionid : datames.openid,
+      usNickname: userInfo.nickName,
+      usSex: userInfo.gender,
+      usLanguage: userInfo.language,
+      usCity: userInfo.city,
+      usProvince: userInfo.province,
+      usCountry: userInfo.country,
+      usHeadimgurl: userInfo.avatarUrl,
+      usSubscribeTime: Date.parse(new Date()) / 1000
+    }
+    console.log(parent, '用户信息')
+
+    const { data: res } = await wepy.post('/session/getparam', parent)
+    // console.log(res, 888)
+    return res
+  }
+}
+</script>

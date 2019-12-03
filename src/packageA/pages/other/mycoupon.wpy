@@ -1,0 +1,195 @@
+<template>
+    <view class="coupon">
+        <view class="head">
+            <view class="head-btn {{canuse}}" id="canuse" bindtap="useBtnFun">可使用</view>
+            <view class="head-btn {{useed}}" id="useed" bindtap="useBtnFun">已使用</view>
+            <view class="head-btn {{unuse}}" id="unuse" bindtap="useBtnFun">已过期</view>
+        </view>
+        <view style="display:{{nocoupon}}" class="nocoupon">
+            <van-icon name="coupon" class="nocoupon-icon"/>
+            <view class="nocoupon-title">暂无优惠券</view>
+            <view class="nocoupon-btn" bindtap="tocoupon">前往领券</view>
+        </view>
+        <!-- <view style="display:{{nocoupon}}">
+            <image class="" src="/assets/images/nocoupon_.png">
+            <view class="">暂无优惠券</view>
+        </view>-->
+        <view style="display:{{couponbox}}">
+            <view
+                wx:for="{{coupons}}"
+                wx:for-item="coupon"
+                wx:key="coupon.id"
+                class="couponbox"
+                id="{{coupon.id}}"
+                data-id="{{coupon.id}}"
+                data-cid="{{coupon.cid}}"
+                bindtap="couponDetail"
+            >
+                <view class="couponbox-top">
+                    <view class="couponbox-left">
+                        <text class="couponbox-left-denomination">{{coupon.mmoney}}</text>
+                        <text class="couponbox-left-m">元</text>
+                    </view>
+                    <view class="couponbox-right">
+                        <text class="couponbox-right-cname">{{coupon.cname}}</text>
+                        <view
+                            wx:if="{{coupon.sum != 0}}"
+                            class="couponbox-left-mtext"
+                        >满{{coupon.sum}}元可用</view>
+                        <view wx:elif="{{coupon.sum == 0}}" class="couponbox-left-mtext">(可直接使用)</view>
+                    </view>
+                    <view class="couponbox-right-two">
+                        <view class="item_use" wx:if="{{btnTab=='useed'}}">
+                            <image src="/assets/images/couponuse.png">
+                        </view>
+                        <view class="item_old" wx:elif="{{btnTab=='unuse'}}">
+                            <image src="/assets/images/couponuseold.png">
+                        </view>
+                    </view>
+                </view>
+                <view class="couponbox-buttom">
+                    <view
+                        class="couponbox-right-text"
+                    >有效期:{{coupon.starttimeStr}} ~ {{coupon.endtimeStr}}</view>
+                    <view class="couponbox-right-text">适用范围:{{coupon.instructions}}</view>
+                </view>
+            </view>
+        </view>
+    </view>
+</template>
+           
+<script>
+import wepy from 'wepy'
+import mix from '@/mixins/other/mycoupon.js'
+export default class Home extends wepy.page {
+  config = {
+    navigationBarTitleText: '我的优惠券'
+  }
+  mixins = [mix]
+}
+</script>
+<style lang="less">
+/* pages/main/mycoupon.wxss */
+page {
+  background-color: #f7f7f7;
+}
+
+.nocoupon {
+margin: 30rpx 0;
+  padding: 0 100rpx;
+  text-align: center;
+  .nocoupon-icon {
+    font-size:320rpx;
+    color: #BFBFBF;
+  }
+  .nocoupon-title {
+        color: #636363;
+        font-size: 28rpx;
+    }
+    .nocoupon-btn {
+        margin: 0 auto;
+        margin-top: 20rpx;
+        width: 220rpx;
+        border-radius: 10rpx;
+        height: 60rpx;
+        color: #fff;
+        line-height: 60rpx;
+        font-size: 28rpx;
+        background-color: #65B1F8;
+    }
+}
+.head {
+  background-color: #fff;
+  height: 50px;
+  border-bottom: 1px solid rgba(100, 100, 100, 0.1);
+}
+.head-btn {
+  height: 48px;
+  width: calc(100% / 3);
+  line-height: 48px;
+  float: left;
+  text-align: center;
+}
+.selected {
+  color: rgba(100, 150, 250, 1);
+  border-bottom: 2px solid rgba(100, 150, 250, 1);
+}
+.couponbox {
+  background-color: #fff;
+  margin: 30rpx;
+  // height: 300rpx;
+  padding: 45rpx;
+  position: relative;
+  .couponbox-top {
+    padding-bottom: 38rpx;
+    border-bottom: 2rpx dashed #d2d2d2;
+    width: 100%;
+    display: flex;
+    .couponbox-left {
+      // flex: 1;
+      width: 180rpx;
+      display: flex;
+      justify-content: space-around;
+      align-items: flex-end;
+      .couponbox-left-denomination {
+        color: #5388e7;
+        font-size: 75rpx;
+        font-weight: 600;
+      }
+      .couponbox-left-m {
+        color: #5388e7;
+        font-size: 36rpx;
+        font-size: 450;
+        margin-bottom: 10rpx;
+      }
+    }
+    .couponbox-right {
+      flex: 2;
+      margin-left: 20rpx;
+      .couponbox-right-cname {
+        z-index: 99;
+        font-size: 28rpx;
+        line-height: 60rpx;
+      }
+      .couponbox-left-mtext {
+        color: #7a7a7a;
+        font-size: 24rpx;
+      }
+    }
+    .couponbox-right-two {
+      .item_in {
+        font-size: 24rpx;
+        color: #4c8ff0;
+        border: 2rpx solid #4c8ff0;
+        border-radius: 10rpx;
+        padding: 10rpx;
+      }
+      .item_use,
+      .item_old {
+        position: absolute;
+        right: 10rpx;
+        top: 10rpx;
+        image {
+          width: 150rpx;
+          height: 140rpx;
+        }
+      }
+    }
+  }
+  .couponbox-buttom {
+    padding-top: 30rpx;
+    .couponbox-right-text {
+      color: #9c9c9c;
+      font-size: 24rpx;
+    }
+  }
+}
+.bgimg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+}
+</style>

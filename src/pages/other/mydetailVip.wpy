@@ -1,0 +1,114 @@
+<template>
+  <view>
+    <view class="container page">
+      <view class="panel">
+        <view class="tiaoxinma">
+          <view class="barnum">{{cardnum}}</view>
+          <view class="barcode">
+            <image  src="{{BARImgUrl}}"  style="width: 100%" mode="widthFix" />
+          </view>
+          <canvas canvas-id="barcode" class="canvasqr"/>
+        </view>
+        <view class="qrcode">
+          <image src="{{qrcode}}" class="qrcode_img" style="width: 100%" mode="widthFix" />
+          <!-- <canvas canvas-id="qrcode"/> -->
+        </view>
+      </view>
+    </view>
+    <!-- <view class="instructions">
+            <view>使用说明</view>
+            <text class="instructions-text">{{instructions}}</text>
+    </view>-->
+  </view>
+</template>
+           
+<script>
+import wepy from 'wepy'
+import mix from '@/mixins/other/mydetailVip.js'
+export default class Home extends wepy.page {
+  config = {
+    navigationBarTitleText: '会员展示码'
+  }
+  mixins = [mix]
+}
+</script>
+<style lang="less">
+/* pages/main/coupondetail.wxss */
+page {
+  background-color: rgba(100, 150, 250, 1);
+}
+.page {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.container {
+  padding-bottom: 10rpx;
+}
+
+.panel {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: stretch;
+  box-sizing: border-box;
+  width: 710rpx;
+  border-radius: 10rpx;
+  background-color: #fff;
+}
+
+.tiaoxinma {
+	width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+	  margin-bottom: 20rpx;
+	  .barnum {
+      height: 80rpx;
+      line-height: 80rpx;
+		  font-size: 35rpx;
+		  text-align: center;
+      letter-spacing:15rpx;
+      margin-bottom: 30rpx;
+		}
+		.barcode {
+      width: 600rpx;
+      height: 220rpx;
+			background-color: #fff;
+		}
+  }
+  .tiaoxinma > canvas {
+	  position: absolute;
+      top: -1000px;
+      right: 0;
+      width: 100%;
+      height: 240rpx;
+    }
+
+.qrcode {
+  width: 420rpx;
+  height: 420rpx;
+  margin: 0 auto;
+  margin-bottom: 20rpx;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+  background-color: #fff;
+}
+
+.qrcode > canvas {
+  width: 420rpx;
+  height: 420rpx;
+}
+.instructions {
+  padding: 10px;
+  color: white;
+}
+.instructions-text {
+  padding: 20px;
+}
+</style>
